@@ -29,6 +29,7 @@ private:
     double m_constanteG;
     double m_scale;
     double m_centerOn[2];
+    int m_mouseOnPress[2];
 
     //fenetre
     sf::RenderWindow m_window;
@@ -54,6 +55,7 @@ private:
 
     //autre
     void addCorps(double x, double y);
+    void addCorps(double x, double y, double vx, double vy);
 
 };
 

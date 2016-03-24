@@ -15,6 +15,9 @@ Simulation::Simulation()
     m_scale = 1;
     m_centerOn[0] = 0;
     m_centerOn[1] = 0;
+    m_mouseOnPress[0] = 0;
+    m_mouseOnPress[1] = 0;
+
 
     //initialisation fenetre
     m_window.create(VideoMode(800, 800), "Newton's gravitational law");
@@ -78,12 +81,20 @@ void Simulation::events()
             case Event::Closed:
                 m_window.close();
                 break;
+            case Event::MouseButtonPressed:
+                if(event.mouseButton.button == Mouse::Left)
+                {
+                    Vector2i mouseFirstPosition = Mouse::getPosition(m_window);
+                    m_mouseOnPress[0] = mouseFirstPosition.x;
+                    m_mouseOnPress[1] = mouseFirstPosition.y;
+                }
+                break;
             case Event::MouseButtonReleased:
                 if(event.mouseButton.button == Mouse::Left)
                 {
                     Vector2u sizeWindow = m_window.getSize();
                     Vector2i mousePosition = Mouse::getPosition(m_window);
-                    addCorps((mousePosition.x - m_centerOn[0])*m_scale, (mousePosition.y - m_centerOn[1])*m_scale);
+                    addCorps((m_mouseOnPress[0] - m_centerOn[0])*m_scale, (m_mouseOnPress[1] - m_centerOn[1])*m_scale, (m_mouseOnPress[0] - mousePosition.x), (m_mouseOnPress[1] - mousePosition.y));
                 }
                 break;
             case Event::KeyPressed:
@@ -216,6 +227,8 @@ void Simulation::afficher()
         rayon = rayon/m_scale;
         x = x/m_scale +m_centerOn[0];
         y = y/m_scale +m_centerOn[1];
+        ax = ax/m_scale +m_centerOn[0];
+        ay = ay/m_scale +m_centerOn[0];
 
 
         //implémentation fenetre
@@ -439,4 +452,10 @@ void Simulation::addCorps(double x, double y)
     Corps newCorps(x, y);
     m_galaxie.push_back(newCorps);
 
+}
+
+void Simulation::addCorps(double x, double y, double vx, double vy)
+{
+    Corps newCorps(x, y, vx, vy);
+    m_galaxie.push_back(newCorps);
 }
