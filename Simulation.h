@@ -27,6 +27,8 @@ private:
 
     std::vector<Corps> m_galaxie;
     double m_constanteG;
+    double m_scale;
+    double m_centerOn[2];
 
     //fenetre
     sf::RenderWindow m_window;

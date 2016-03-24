@@ -12,6 +12,9 @@ using namespace sf;
 Simulation::Simulation()
 {
     m_constanteG = 10000;
+    m_scale = 1;
+    m_centerOn[0] = 0;
+    m_centerOn[1] = 0;
 
     //initialisation fenetre
     m_window.create(VideoMode(800, 800), "Newton's gravitational law");
@@ -69,16 +72,52 @@ void Simulation::events()
     Event event;
     while(m_window.pollEvent(event))
     {
-        if(event.type == Event::Closed)
-            m_window.close();
 
-        if(event.type == Event::MouseButtonReleased)//Si on clique, on ajoute un corps
+        switch (event.type)
         {
-            if(event.mouseButton.button == Mouse::Left)
-            {
-                Vector2i mousePosition = Mouse::getPosition(m_window);
-                addCorps(mousePosition.x, mousePosition.y);
-            }
+            case Event::Closed:
+                m_window.close();
+                break;
+            case Event::MouseButtonReleased:
+                if(event.mouseButton.button == Mouse::Left)
+                {
+                    Vector2u sizeWindow = m_window.getSize();
+                    Vector2i mousePosition = Mouse::getPosition(m_window);
+                    addCorps((mousePosition.x - m_centerOn[0])*m_scale, (mousePosition.y - m_centerOn[1])*m_scale);
+                }
+                break;
+            case Event::KeyPressed:
+                switch (event.key.code)
+                {
+                    case Keyboard::Left:
+                        m_centerOn[0] += 2;
+                        break;
+                    case Keyboard::Right:
+                        m_centerOn[0] += -2;
+                        break;
+                    case Keyboard::Up:
+                        m_centerOn[1] += 2;
+                        break;
+                    case Keyboard::Down:
+                        m_centerOn[1] += -2;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Event::MouseWheelMoved:
+                if(m_scale <= 0.2 && event.mouseWheel.delta < 0)
+                {
+                    break;
+                }
+                else
+                {
+                    m_scale += event.mouseWheel.delta*0.1;
+                }
+                break;
+
+            default:
+                break;
         }
     }
 }
@@ -155,13 +194,14 @@ void Simulation::afficher()
     RectangleShape vectorX[tailleTableaux];
     RectangleShape vectorY[tailleTableaux];
 
-    double x(0), y(0), rayon(0);
+    double x(0), y(0), rayon(0), ax(0), ay(0);
     int color[3];
 
     double top = m_chrono.getElapsedTime().asSeconds();
     m_chrono.restart();
 
     m_window.clear(Color::Black);
+    Vector2u sizeWindow = m_window.getSize();
 
     for(int i(0); i < m_galaxie.size() ; i++)
     {
@@ -169,11 +209,17 @@ void Simulation::afficher()
         //récupération données
         m_galaxie[i].getPosition(x, y);
         rayon = m_galaxie[i].getRayon();
-        double ax(0), ay(0);
+
         m_galaxie[i].getAcceleration(ax, ay);
 
+        //mise à l'echelle des données !
+        rayon = rayon/m_scale;
+        x = x/m_scale +m_centerOn[0];
+        y = y/m_scale +m_centerOn[1];
+
+
         //implémentation fenetre
-        cercle[i].setPosition((int)x-rayon, (int)y-rayon);
+        cercle[i].setPosition((int)(x-rayon), (int)(y-rayon));
         cercle[i].setRadius(rayon);
         cercle[i].setFillColor(Color::White);
 
@@ -193,7 +239,7 @@ void Simulation::afficher()
     }
 
 
-    m_affichageAux->setString("FPS: " + to_string(1/top));
+    m_affichageAux->setString("FPS: " + to_string(1/top) + "/Scale: " + to_string(m_scale) + "Center: " + to_string(m_centerOn[0]));
     m_window.draw(*m_affichageAux);
 
     m_window.display();
