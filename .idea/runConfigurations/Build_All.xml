@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="GravityLaw" TARGET_NAME="GravityLaw" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="GravityLaw" RUN_TARGET_NAME="GravityLaw">
+    <envs />
+    <method />
+  </configuration>
+</component>
