@@ -10,7 +10,7 @@
 #include <thread>
 #include <gtkmm.h>
 #include <GL/gl.h>
-#include <gtkglmm.h>
+//#include <gtkglmm.h>
 #include <stdlib.h>
 #include <vector>
 

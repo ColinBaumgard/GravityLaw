@@ -63,7 +63,6 @@ void Controller::fenetrePrincipale()
     g_signal_connect(G_OBJECT(bouton_newSimulation), "clicked", G_CALLBACK(newSimulation_callback), this);
     gtk_container_add(GTK_CONTAINER(m_MainWindow), bouton_newSimulation);
 
-    gtk_g
 
 
 
